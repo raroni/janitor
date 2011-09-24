@@ -1,4 +1,4 @@
-class TestUnit.FailedAssertMessageResolver
+module.exports = class
   constructor: (failed_assert) ->
     @type = failed_assert.type
     @options = failed_assert.options

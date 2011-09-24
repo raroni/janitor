@@ -5,6 +5,6 @@ module.exports = class extends Presenter
     text = @failedAssertDescription failed_assert
     el = $('<div>').text(text)
     el.css color: 'red'
-    $(@el).append el
+    $(@options.el).append el
   complete: ->
-    $(@el).append $('<div>').text(@summaryMessage())
+    $(@options.el).append $('<div>').text(@summaryMessage())
