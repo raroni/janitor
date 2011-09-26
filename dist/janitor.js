@@ -1,4 +1,7 @@
-
+window.Janitor = {};
+window.Janitor.Stitch = {};
+(function() {
+  
 (function(/*! Stitch !*/) {
   if (!this.require) {
     var modules = {}, cache = {}, require = function(name, root) {
@@ -1276,4 +1279,6 @@ arguments),this._chain)}});j.prototype.chain=function(){this._chain=!0;return th
 })();
 }});
 
-window.Janitor = { TestCase: require('test_case'), WebRunner: require('web_runner') };
+}).call(window.Janitor.Stitch);
+window.Janitor.TestCase = Janitor.Stitch.require('test_case'),
+window.Janitor.WebRunner = Janitor.Stitch.require('web_runner')
