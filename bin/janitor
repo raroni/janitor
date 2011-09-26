@@ -1,9 +1,7 @@
 #!/usr/bin/env coffee
 
-exec = require('child_process').exec
+test_dir = [process.env.PWD, 'test'].join '/'
 
-exec 'pwd', (error, stdout, stderr) ->
-  dir = [stdout.replace("\n", ""), 'test'].join '/'
-  Runner = require '../src/node_runner'
-  runner = new Runner {dir}
-  runner.run()
+Runner = require '../src/node_runner'
+runner = new Runner { dir: test_dir }
+runner.run()
