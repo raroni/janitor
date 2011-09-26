@@ -13,7 +13,7 @@ task 'build', 'Build dist file', ->
         #{source}
       }).call(window.Janitor.Stitch);
       window.Janitor.TestCase = Janitor.Stitch.require('test_case'),
-      window.Janitor.WebRunner = Janitor.Stitch.require('web_runner')
+      window.Janitor.BrowserRunner = Janitor.Stitch.require('browser_runner')
       
     """
     fs.writeFileSync __dirname + '/dist/janitor.js', source

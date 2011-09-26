@@ -66,6 +66,70 @@ window.Janitor.Stitch = {};
     }
   };
 }).call(this);
+}, "browser_presenter": function(exports, require, module) {(function() {
+  var Presenter;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
+  Presenter = require('./presenter');
+  module.exports = (function() {
+    __extends(_Class, Presenter);
+    function _Class() {
+      _Class.__super__.constructor.apply(this, arguments);
+    }
+    _Class.prototype.outputFailedAssert = function(failed_assert) {
+      var el, text;
+      text = this.failedAssertDescription(failed_assert);
+      el = $('<div>').text(text);
+      el.css({
+        color: 'red'
+      });
+      return $(this.options.el).append(el);
+    };
+    _Class.prototype.complete = function() {
+      return $(this.options.el).append($('<div>').text(this.summaryMessage()));
+    };
+    return _Class;
+  })();
+}).call(this);
+}, "browser_runner": function(exports, require, module) {(function() {
+  var BrowserPresenter, Runner;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
+  Runner = require('runner');
+  BrowserPresenter = require('browser_presenter');
+  module.exports = (function() {
+    __extends(_Class, Runner);
+    function _Class() {
+      _Class.__super__.constructor.apply(this, arguments);
+    }
+    _Class.prototype.presenter_class = BrowserPresenter;
+    _Class.prototype.tests = function() {
+      var key, _i, _len, _ref, _results;
+      _ref = Object.keys(window);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        if (key.substr(-4) === 'Test') {
+          _results.push(window[key]);
+        }
+      }
+      return _results;
+    };
+    return _Class;
+  })();
+}).call(this);
 }, "console_presenter": function(exports, require, module) {(function() {
   var Presenter;
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
@@ -345,70 +409,6 @@ window.Janitor.Stitch = {};
   _.extend(module.exports.prototype, Asserts);
   _.extend(module.exports.prototype, EventEmitter);
   _.extend(module.exports, EventEmitter);
-}).call(this);
-}, "web_presenter": function(exports, require, module) {(function() {
-  var Presenter;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
-  Presenter = require('./presenter');
-  module.exports = (function() {
-    __extends(_Class, Presenter);
-    function _Class() {
-      _Class.__super__.constructor.apply(this, arguments);
-    }
-    _Class.prototype.outputFailedAssert = function(failed_assert) {
-      var el, text;
-      text = this.failedAssertDescription(failed_assert);
-      el = $('<div>').text(text);
-      el.css({
-        color: 'red'
-      });
-      return $(this.options.el).append(el);
-    };
-    _Class.prototype.complete = function() {
-      return $(this.options.el).append($('<div>').text(this.summaryMessage()));
-    };
-    return _Class;
-  })();
-}).call(this);
-}, "web_runner": function(exports, require, module) {(function() {
-  var Runner, WebPresenter;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
-  Runner = require('runner');
-  WebPresenter = require('web_presenter');
-  module.exports = (function() {
-    __extends(_Class, Runner);
-    function _Class() {
-      _Class.__super__.constructor.apply(this, arguments);
-    }
-    _Class.prototype.presenter_class = WebPresenter;
-    _Class.prototype.tests = function() {
-      var key, _i, _len, _ref, _results;
-      _ref = Object.keys(window);
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        if (key.substr(-4) === 'Test') {
-          _results.push(window[key]);
-        }
-      }
-      return _results;
-    };
-    return _Class;
-  })();
 }).call(this);
 }, "index": function(exports, require, module) {module.exports = require('./underscore');
 }, "underscore-min": function(exports, require, module) {// Underscore.js 1.1.7
@@ -1281,4 +1281,4 @@ arguments),this._chain)}});j.prototype.chain=function(){this._chain=!0;return th
 
 }).call(window.Janitor.Stitch);
 window.Janitor.TestCase = Janitor.Stitch.require('test_case'),
-window.Janitor.WebRunner = Janitor.Stitch.require('web_runner')
+window.Janitor.BrowserRunner = Janitor.Stitch.require('browser_runner')
