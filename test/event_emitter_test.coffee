@@ -1,8 +1,8 @@
-TestCase = require '../src/test_case'
+Janitor = require '../.'
 EventEmitter = require '../src/event_emitter'
 _ = require 'underscore'
 
-module.exports = class extends TestCase
+module.exports = class extends Janitor.TestCase
   setup: ->
     class User
     _.extend User.prototype, EventEmitter

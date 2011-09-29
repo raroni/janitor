@@ -1,0 +1,8 @@
+{
+  "name"          : "Janitor",
+  "description"   : "Coffeescript unit test framework for node and the browser heavily inspired by Ruby's Test::Unit.",
+  "keywords"      : ["testing"],
+  "author"        : "Rasmus Rønn Nielsen <rasmusrnielsen@gmail.com>",
+  "main"          : "src/main.coffee",
+  "version"       : "0.1.1"
+}

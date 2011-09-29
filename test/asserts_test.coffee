@@ -1,8 +1,8 @@
-TestCase = require '../src/test_case'
+Janitor = require '../.'
 Asserts = require '../src/asserts'
 _ = require 'underscore'
 
-module.exports = class extends TestCase
+module.exports = class extends Janitor.TestCase
   setup: ->
     class Assertable
       store_assert: (type, succeeded, options) ->
