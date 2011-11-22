@@ -1,14 +1,16 @@
 {
-  "name"          : "Janitor",
+  "name"          : "janitor",
   "description"   : "Coffeescript unit test framework for node and the browser heavily inspired by Ruby's Test::Unit.",
   "keywords"      : ["testing"],
   "author"        : "Rasmus Rønn Nielsen <rasmusrnielsen@gmail.com>",
   "main"          : "src/main.coffee",
   "version"       : "0.1.1",
+  "bin": { "janitor": "./bin/janitor" },
   "devDependencies": {
     "stitch": "0.3.2"
   },
   "dependencies": {
+    "coffee-script" : "~1.1.3",
     "glob": "2.1.0"
   }
 }
