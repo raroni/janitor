@@ -2,6 +2,11 @@
 
 Janitor lets you write unit test in coffeescript that resembles tests written with Ruby's Test::Unit. You can use it with node or in the browser.
 
+## Why use janitor?
+
+* Because you, like me, like the simplicity of Ruby's Test::Unit and want to work the same way in Coffeescript.
+* Because you like having the ability to test asynchronous code without being required to call `@done()` in each of your synchronous tests.
+
 ## In the browser
 
 Get [the most recent dist file](https://raw.github.com/rasmusrn/janitor/master/dist/janitor.js) and include it on your test page. Define your tests like so:
@@ -66,8 +71,3 @@ module.exports = class extends Janitor.TestCase
       @assert obj.allIsWell()
       @done()
 ```
-
-## Why use janitor?
-
-* Because you, like me, like the simplicity of Ruby's Test::Unit and want to work the same way in Coffeescript.
-* Because you like having the ability to test asynchronous code without being required to call `@done()` in each of your synchronous tests.
