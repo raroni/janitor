@@ -1,10 +1,8 @@
 stitch  = require 'stitch'
 fs = require 'fs'
 
-# TODO: do not require all of underscore
-
 task 'build', 'Build dist file', ->
-  package = stitch.createPackage paths: [__dirname + '/src', __dirname + '/node_modules/underscore']
+  package = stitch.createPackage paths: [__dirname + '/src']
   package.compile (err, source) ->
     source = """
       window.Janitor = {};
