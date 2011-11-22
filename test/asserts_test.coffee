@@ -1,6 +1,6 @@
 Janitor = require '../.'
 Asserts = require '../src/asserts'
-_ = require 'underscore'
+Utils = require '../src/utils'
 
 module.exports = class extends Janitor.TestCase
   setup: ->
@@ -8,7 +8,7 @@ module.exports = class extends Janitor.TestCase
       store_assert: (type, succeeded, options) ->
         @last_assert = { type, succeeded, options}
       
-    _.extend Assertable.prototype, Asserts
+    Utils.extend Assertable.prototype, Asserts
     @assertable = new Assertable
   
   'test passing equal assertion': ->

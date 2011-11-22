@@ -1,6 +1,6 @@
-_ = require 'underscore'
 Asserts = require './asserts'
 EventEmitter = require './event_emitter'
+Utils = require './utils'
 
 module.exports = class
   @runs = []
@@ -58,7 +58,6 @@ module.exports = class
   succeeded: ->
     @completed && @failed_asserts == 0
 
-_.extend module.exports.prototype, Asserts
-_.extend module.exports.prototype, EventEmitter
-_.extend module.exports, EventEmitter
-
+Utils.extend module.exports.prototype, Asserts
+Utils.extend module.exports.prototype, EventEmitter
+Utils.extend module.exports, EventEmitter
