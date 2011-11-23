@@ -51,13 +51,13 @@ MyLib = require '../.'
 
 module.exports = class extends Janitor.TestCase
   setup: ->
-    obj = new MyLib
+    @obj = new MyLib
     
   'test something': ->
-    @assert obj.allIsWell()
+    @assert @obj.allIsWell()
     
   'test something': ->
-    @assert obj.everythingOk()
+    @assert @obj.everythingOk()
 
 ```
 
