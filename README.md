@@ -1,6 +1,6 @@
 # Janitor
 
-Janitor lets you write unit test in Coffeescript that resembles tests written with Ruby's Test::Unit. You can use it with node or in the browser.
+Janitor lets you write unit tests in Coffeescript that resemble tests written with Ruby's Test::Unit. You can use it with node or in the browser.
 
 ## Why use janitor?
 

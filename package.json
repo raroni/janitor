@@ -1,6 +1,6 @@
 {
   "name"          : "janitor",
-  "description"   : "Coffeescript unit test framework for node and the browser heavily inspired by Ruby's Test::Unit.",
+  "description"   : "Write unit tests in Coffeescript that resemble tests written with Ruby's Test::Unit. You can use it with node or in the browser.",
   "keywords"      : ["testing"],
   "author"        : "Rasmus Rønn Nielsen <rasmusrnielsen@gmail.com>",
   "main"          : "src/main.coffee",
