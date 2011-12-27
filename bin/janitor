@@ -1,7 +1,0 @@
-#!/usr/bin/env coffee
-
-test_dir = [process.env.PWD, 'test'].join '/'
-
-Runner = require '../src/node_runner'
-runner = new Runner { dir: test_dir }
-runner.run()

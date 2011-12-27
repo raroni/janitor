@@ -29,18 +29,16 @@ Test results will now be outputted to the #js_test_results element.
 
 ## In node
 
-Install janitor via `npm install -g janitor` and create test files in test/* like so:
+Add the following to your `Cakefile` ([read more about Cakefiles](http://coffeescript.org/#cake))
 
 ```coffeescript
-MyLib = require '../.'
-
-module.exports = class extends Janitor.TestCase
-  'test something': ->
-    obj = new MyLib
-    @assert obj.allIsWell()
+task 'test', 'Run test suite', ->
+  Janitor = require 'janitor'
+  runner = new Janitor.NodeRunner { dir: __dirname + '/test' }
+  runner.run()
 ```
 
-Run `janitor` to see test results in the terminal.
+Run `cake test` to see test results in the terminal.
 
 ## Extras
 

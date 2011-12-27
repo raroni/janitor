@@ -15,3 +15,8 @@ task 'build', 'Build dist file', ->
       
     """
     fs.writeFileSync __dirname + '/dist/janitor.js', source
+
+task 'test', 'Run test suite', ->
+  Janitor = require './src/main'
+  runner = new Janitor.NodeRunner { dir: __dirname + '/test' }
+  runner.run()
