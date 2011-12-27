@@ -4,7 +4,7 @@
   "keywords"      : ["testing"],
   "author"        : "Rasmus Rønn Nielsen <rasmusrnielsen@gmail.com>",
   "main"          : "src/main.coffee",
-  "version"       : "0.1.2",
+  "version"       : "0.1.3",
   "devDependencies": {
     "stitch": "0.3.2"
   },
