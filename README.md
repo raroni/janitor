@@ -29,7 +29,7 @@ Test results will now be outputted to the #js_test_results element.
 
 ## In node
 
-Add the following to your `Cakefile` ([read more about Cakefiles](http://coffeescript.org/#cake))
+Add the following to your `Cakefile` ([read more about Cakefiles](http://coffeescript.org/#cake)).
 
 ```coffeescript
 task 'test', 'Run test suite', ->
