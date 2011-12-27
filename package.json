@@ -4,7 +4,7 @@
   "keywords"      : ["testing"],
   "author"        : "Rasmus Rønn Nielsen <rasmusrnielsen@gmail.com>",
   "main"          : "src/main.coffee",
-  "version"       : "0.1.1",
+  "version"       : "0.1.2",
   "bin": { "janitor": "./bin/janitor" },
   "devDependencies": {
     "stitch": "0.3.2"
