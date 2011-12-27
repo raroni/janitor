@@ -4,5 +4,9 @@ Glob = require 'glob'
 
 module.exports = class extends Runner
   presenter_class: ConsolePresenter
+  
   tests: ->
-    (require(file) for file in Glob.globSync("#{@options.dir}/*.coffee"))
+    (require(file) for file in @files())
+  
+  files: ->
+    Glob.globSync "#{@options.dir}/**.coffee"
