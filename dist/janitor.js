@@ -53,7 +53,7 @@ window.Janitor.Stitch = {};
   return this.require.define;
 }).call(this)({"asserts": function(exports, require, module) {
   module.exports = {
-    assert_equal: function(val1, val2) {
+    assertEqual: function(val1, val2) {
       return this.store_assert('equal', val1 === val2, {
         val1: val1,
         val2: val2
@@ -62,6 +62,21 @@ window.Janitor.Stitch = {};
     assert: function(exp) {
       return this.store_assert('true', exp, {
         exp: exp
+      });
+    },
+    assertThrows: function(callback) {
+      var caught, error;
+      caught = false;
+      error = null;
+      try {
+        callback();
+      } catch (thrown_error) {
+        caught = true;
+        error = thrown_error;
+      }
+      return this.store_assert('throw', caught, {
+        callback: callback,
+        error: error
       });
     }
   };
@@ -206,7 +221,10 @@ window.Janitor.Stitch = {};
 
   })();
 }, "main": function(exports, require, module) {
-  exports.TestCase = require('./test_case');
+  module.exports = {
+    TestCase: require('./test_case'),
+    NodeRunner: require('./node_runner')
+  };
 }, "node_runner": function(exports, require, module) {(function() {
   var ConsolePresenter, Glob, Runner;
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
@@ -229,13 +247,17 @@ window.Janitor.Stitch = {};
 
     _Class.prototype.tests = function() {
       var file, _i, _len, _ref, _results;
-      _ref = Glob.globSync("" + this.options.dir + "/*.coffee");
+      _ref = this.files();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         file = _ref[_i];
         _results.push(require(file));
       }
       return _results;
+    };
+
+    _Class.prototype.files = function() {
+      return Glob.globSync("" + this.options.dir + "/**.coffee");
     };
 
     return _Class;
