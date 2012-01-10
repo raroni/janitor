@@ -12,47 +12,47 @@ module.exports = class extends Janitor.TestCase
     @assertable = new Assertable
   
   'test passing equal assertion': ->
-    @assertable.assert_equal 1,1
+    @assertable.assertEqual 1,1
     assert = @assertable.last_assert
     @assert assert.succeeded
-    @assert_equal 'equal', assert.type
-    @assert_equal 1, assert.options.val1
-    @assert_equal 1, assert.options.val2
+    @assertEqual 'equal', assert.type
+    @assertEqual 1, assert.options.val1
+    @assertEqual 1, assert.options.val2
     
   'test failing equal assertion': ->
-    @assertable.assert_equal 2,3
+    @assertable.assertEqual 2,3
     assert = @assertable.last_assert
     @assert !assert.succeeded
-    @assert_equal 'equal', assert.type
-    @assert_equal 2, assert.options.val1
-    @assert_equal 3, assert.options.val2
+    @assertEqual 'equal', assert.type
+    @assertEqual 2, assert.options.val1
+    @assertEqual 3, assert.options.val2
     
   'test passing truth assertion': ->
     @assertable.assert true
     assert = @assertable.last_assert
     @assert assert.succeeded
-    @assert_equal 'true', assert.type
-    @assert_equal true, assert.options.exp
+    @assertEqual 'true', assert.type
+    @assertEqual true, assert.options.exp
 
   'test failing truth assertion': ->
     @assertable.assert false
     assert = @assertable.last_assert
     @assert !assert.succeeded
-    @assert_equal 'true', assert.type
-    @assert_equal false, assert.options.exp
+    @assertEqual 'true', assert.type
+    @assertEqual false, assert.options.exp
   
   'test passing throws assertion': ->
     callback = -> throw 'me!'
-    @assertable.assert_throws callback
+    @assertable.assertThrows callback
     assert = @assertable.last_assert
     @assert assert.succeeded
-    @assert_equal 'throw', assert.type
-    @assert_equal callback, assert.options.callback
+    @assertEqual 'throw', assert.type
+    @assertEqual callback, assert.options.callback
   
   'test failing throws assertion': ->
     callback = -> "Forget it! I won't throw anything"
-    @assertable.assert_throws callback
+    @assertable.assertThrows callback
     assert = @assertable.last_assert
     @assert !assert.succeeded
-    @assert_equal 'throw', assert.type
-    @assert_equal callback, assert.options.callback
+    @assertEqual 'throw', assert.type
+    @assertEqual callback, assert.options.callback
