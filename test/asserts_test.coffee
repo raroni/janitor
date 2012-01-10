@@ -40,3 +40,19 @@ module.exports = class extends Janitor.TestCase
     @assert !assert.succeeded
     @assert_equal 'true', assert.type
     @assert_equal false, assert.options.exp
+  
+  'test passing throws assertion': ->
+    callback = -> throw 'me!'
+    @assertable.assert_throws callback
+    assert = @assertable.last_assert
+    @assert assert.succeeded
+    @assert_equal 'throw', assert.type
+    @assert_equal callback, assert.options.callback
+  
+  'test failing throws assertion': ->
+    callback = -> "Forget it! I won't throw anything"
+    @assertable.assert_throws callback
+    assert = @assertable.last_assert
+    @assert !assert.succeeded
+    @assert_equal 'throw', assert.type
+    @assert_equal callback, assert.options.callback
