@@ -56,3 +56,13 @@ module.exports = class extends Janitor.TestCase
     @assert !assert.succeeded
     @assertEqual 'throw', assert.type
     @assertEqual callback, assert.options.callback
+  
+  'test passing contains assertion': ->
+    @assertable.assertContains [1,2,3], 1
+    assert = @assertable.last_assert
+    @assert assert.succeeded
+    @assertEqual 'contains', assert.type
+    @assert Array.isArray(assert.options.container)
+    @assertEqual 3, assert.options.container.length
+    @assertEqual i, assert.options.container[i-1] for i in [1..3]
+    @assertEqual 1, assert.options.value

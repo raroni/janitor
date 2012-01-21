@@ -14,3 +14,7 @@ module.exports =
       caught = true
       error = thrown_error
     @store_assert 'throw', caught, {callback, error}
+  
+  assertContains: (container, value) ->
+    result = container.indexOf(value) != -1
+    @store_assert 'contains', result, {container, value}
