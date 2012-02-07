@@ -5,7 +5,7 @@ Janitor lets you write unit tests in Coffeescript that resemble tests written wi
 ## Why use janitor?
 
 * Because you, like me, like the simplicity of Ruby's Test::Unit and want to work the same way in Coffeescript.
-* Because you like having the ability to test asynchronous code without being required to call `@done()` in each of your synchronous tests.
+* Because you like having the ability to test asynchronous code without being required to call `@complete()` in each of your synchronous tests.
 
 ## In the browser
 
@@ -67,5 +67,5 @@ module.exports = class extends Janitor.TestCase
     obj = new MyLib
     obj.doSomething =>
       @assert obj.allIsWell()
-      @done()
+      @complete()
 ```
