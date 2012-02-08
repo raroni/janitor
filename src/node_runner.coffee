@@ -9,4 +9,4 @@ module.exports = class extends Runner
     (require(file) for file in @files())
   
   files: ->
-    Glob.globSync "#{@options.dir}/**.coffee"
+    Glob.globSync "#{@options.dir}/**_test.coffee"
