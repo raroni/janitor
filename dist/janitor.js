@@ -64,8 +64,8 @@ window.Janitor.Stitch = {};
         exp: exp
       });
     },
-    assertThrows: function(callback) {
-      var caught, error;
+    assertThrows: function(callback, check) {
+      var caught, error, success;
       caught = false;
       error = null;
       try {
@@ -74,9 +74,18 @@ window.Janitor.Stitch = {};
         caught = true;
         error = thrown_error;
       }
-      return this.store_assert('throw', caught, {
+      success = caught && (!check || check(error));
+      return this.store_assert('throw', success, {
         callback: callback,
         error: error
+      });
+    },
+    assertContains: function(container, value) {
+      var result;
+      result = container.indexOf(value) !== -1;
+      return this.store_assert('contains', result, {
+        container: container,
+        value: value
       });
     }
   };
@@ -257,7 +266,7 @@ window.Janitor.Stitch = {};
     };
 
     _Class.prototype.files = function() {
-      return Glob.globSync("" + this.options.dir + "/**.coffee");
+      return Glob.globSync("" + this.options.dir + "/**_test.coffee");
     };
 
     return _Class;
