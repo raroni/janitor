@@ -49,9 +49,27 @@ module.exports = class extends Janitor.TestCase
     @assertEqual 'throw', assert.type
     @assertEqual callback, assert.options.callback
   
+  'test passing throws assertion with second argument being a function': ->
+    callback = -> throw new Error 'wee'
+    check = (e) -> e.message == 'wee'
+    @assertable.assertThrows callback, check
+    assert = @assertable.last_assert
+    @assert assert.succeeded
+    @assertEqual 'throw', assert.type
+    @assertEqual callback, assert.options.callback
+  
   'test failing throws assertion': ->
     callback = -> "Forget it! I won't throw anything"
     @assertable.assertThrows callback
+    assert = @assertable.last_assert
+    @assert !assert.succeeded
+    @assertEqual 'throw', assert.type
+    @assertEqual callback, assert.options.callback
+  
+  'test throws assertion fails if second argument is a function that returns false': ->
+    callback = -> throw new Error 'Secret!'
+    check = (e) -> e.message == 'dunno'
+    @assertable.assertThrows callback, check
     assert = @assertable.last_assert
     @assert !assert.succeeded
     @assertEqual 'throw', assert.type

@@ -5,7 +5,7 @@ module.exports =
   assert: (exp) ->
     @store_assert 'true', exp, {exp}
   
-  assertThrows: (callback) ->
+  assertThrows: (callback, check) ->
     caught = false
     error = null
     try
@@ -13,7 +13,10 @@ module.exports =
     catch thrown_error
       caught = true
       error = thrown_error
-    @store_assert 'throw', caught, {callback, error}
+    
+    success = caught && (!check || check(error))
+    
+    @store_assert 'throw', success, {callback, error}
   
   assertContains: (container, value) ->
     result = container.indexOf(value) != -1
