@@ -12,7 +12,7 @@ module.exports = class extends Janitor.TestCase
     @assertable = new Assertable
   
   'test passing equal assertion': ->
-    @assertable.assertEqual 1,1
+    @assertable.assertEqual 1, 1
     assert = @assertable.last_assert
     @assert assert.succeeded
     @assertEqual 'equal', assert.type
