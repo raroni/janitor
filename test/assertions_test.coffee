@@ -84,3 +84,20 @@ module.exports = class extends Janitor.TestCase
     @assertEqual 3, assert.options.container.length
     @assertEqual i, assert.options.container[i-1] for i in [1..3]
     @assertEqual 1, assert.options.value
+  
+  'test passing throws refutation': ->
+    callback = -> 1+1
+    @assertable.refuteThrows callback
+    assert = @assertable.last_assert
+    @assert assert.succeeded
+    @assertEqual 'refute_throw', assert.type
+    @assertEqual callback, assert.options.callback
+  
+  'test failing throws refutation': ->
+    callback = -> throw new Error 'Boom!'
+    @assertable.refuteThrows callback
+    assert = @assertable.last_assert
+    @assert !assert.succeeded
+    @assertEqual 'refute_throw', assert.type
+    @assertEqual callback, assert.options.callback
+    @assertEqual 'Boom!', assert.options.error.message
