@@ -1,4 +1,4 @@
-Asserts = require './asserts'
+Assertsions = require './assertions'
 EventEmitter = require './event_emitter'
 Utils = require './utils'
 
@@ -58,6 +58,6 @@ module.exports = class
   succeeded: ->
     @completed && @failed_asserts == 0
 
-Utils.extend module.exports.prototype, Asserts
+Utils.extend module.exports.prototype, Assertsions
 Utils.extend module.exports.prototype, EventEmitter
 Utils.extend module.exports, EventEmitter

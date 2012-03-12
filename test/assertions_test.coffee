@@ -1,5 +1,5 @@
 Janitor = require '../.'
-Asserts = require '../src/asserts'
+Asserts = require '../src/assertions'
 Utils = require '../src/utils'
 
 module.exports = class extends Janitor.TestCase
