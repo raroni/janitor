@@ -1,4 +1,4 @@
-FailedAssertMessageResolver = require './failed_assertion_message'
+FailedAssertionMessage = require './failed_assertion_message'
 
 module.exports = class
   constructor: (@tests, @options) ->
@@ -26,7 +26,7 @@ module.exports = class
     "#{failedAssert.run.constructor.name}[#{failedAssert.run.methodName}]: #{@failedAssertMessage(failedAssert)}"
     
   failedAssertMessage: (failedAssert) ->
-    new FailedAssertMessageResolver(failedAssert).message()
+    new FailedAssertionMessage(failedAssert).toString()
     
   summaryMessage: ->
     "COMPLETE: #{@asserts} asserts, #{@failedAsserts} failed, #{@succeeded_asserts} succeeded"
