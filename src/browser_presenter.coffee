@@ -3,8 +3,11 @@ Presenter = require './presenter'
 module.exports = class extends Presenter
   outputFailedAssert: (failed_assert) ->
     text = @failedAssertDescription failed_assert
-    el = $('<div>').text(text)
-    el.css color: 'red'
-    $(@options.el).append el
+    el = document.createElement 'div'
+    el.innerHTML = text
+    el.style.color = 'red'
+    @options.el.appendChild el
   complete: ->
-    $(@options.el).append $('<div>').text(@summaryMessage())
+    el = document.createElement 'div'
+    el.innerHTML = @summaryMessage()
+    @options.el.appendChild el
