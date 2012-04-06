@@ -51,16 +51,16 @@ window.Janitor.Stitch = {};
     };
   }
   return this.require.define;
-}).call(this)({"asserts": function(exports, require, module) {
+}).call(this)({"assertions": function(exports, require, module) {
   module.exports = {
     assertEqual: function(val1, val2) {
-      return this.store_assert('equal', val1 === val2, {
+      return this.storeAssert('equal', val1 === val2, {
         val1: val1,
         val2: val2
       });
     },
     assert: function(exp) {
-      return this.store_assert('true', exp, {
+      return this.storeAssert('true', exp, {
         exp: exp
       });
     },
@@ -70,12 +70,28 @@ window.Janitor.Stitch = {};
       error = null;
       try {
         callback();
-      } catch (thrown_error) {
+      } catch (thrownError) {
         caught = true;
-        error = thrown_error;
+        error = thrownError;
       }
       success = caught && (!check || check(error));
-      return this.store_assert('throw', success, {
+      return this.storeAssert('throw', success, {
+        callback: callback,
+        error: error
+      });
+    },
+    refuteThrows: function(callback) {
+      var caught, error, success;
+      caught = false;
+      error = null;
+      try {
+        callback();
+      } catch (thrownError) {
+        caught = true;
+        error = thrownError;
+      }
+      success = !caught;
+      return this.storeAssert('refuteThrow', success, {
         callback: callback,
         error: error
       });
@@ -83,9 +99,19 @@ window.Janitor.Stitch = {};
     assertContains: function(container, value) {
       var result;
       result = container.indexOf(value) !== -1;
-      return this.store_assert('contains', result, {
+      return this.storeAssert('contains', result, {
         container: container,
         value: value
+      });
+    },
+    assertAll: function(enumerable, callback) {
+      var success;
+      success = true;
+      enumerable.forEach(function(item) {
+        if (success) return success = callback(item);
+      });
+      return this.storeAssert('all', success, {
+        callback: callback
       });
     }
   };
@@ -103,18 +129,20 @@ window.Janitor.Stitch = {};
       _Class.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.outputFailedAssert = function(failed_assert) {
+    _Class.prototype.outputFailedAssert = function(failedAssert) {
       var el, text;
-      text = this.failedAssertDescription(failed_assert);
-      el = $('<div>').text(text);
-      el.css({
-        color: 'red'
-      });
-      return $(this.options.el).append(el);
+      text = this.failedAssertDescription(failedAssert);
+      el = document.createElement('div');
+      el.innerHTML = text;
+      el.style.color = 'red';
+      return this.options.el.appendChild(el);
     };
 
     _Class.prototype.complete = function() {
-      return $(this.options.el).append($('<div>').text(this.summaryMessage()));
+      var el;
+      el = document.createElement('div');
+      el.innerHTML = this.summaryMessage();
+      return this.options.el.appendChild(el);
     };
 
     return _Class;
@@ -138,7 +166,7 @@ window.Janitor.Stitch = {};
       _Class.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.presenter_class = BrowserPresenter;
+    _Class.prototype.presenterClass = BrowserPresenter;
 
     _Class.prototype.tests = function() {
       var key, _i, _len, _ref, _results;
@@ -170,8 +198,8 @@ window.Janitor.Stitch = {};
       _Class.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.outputFailedAssert = function(failed_assert) {
-      return console.log(this.failedAssertDescription(failed_assert));
+    _Class.prototype.outputFailedAssert = function(failedAssert) {
+      return console.log(this.failedAssertDescription(failedAssert));
     };
 
     _Class.prototype.complete = function() {
@@ -202,15 +230,25 @@ window.Janitor.Stitch = {};
       return _results;
     }
   };
-}, "failed_assert_message_resolver": function(exports, require, module) {
-  module.exports = (function() {
+}, "failed_assertion_message": function(exports, require, module) {(function() {
+  var FailedAssertionMessage;
 
-    function _Class(failed_assert) {
-      this.type = failed_assert.type;
-      this.options = failed_assert.options;
+  module.exports = FailedAssertionMessage = (function() {
+
+    function FailedAssertionMessage(failedAssert) {
+      this.type = failedAssert.type;
+      this.options = failedAssert.options;
     }
 
-    _Class.prototype.message = function() {
+    FailedAssertionMessage.prototype.equal = function() {
+      return "" + this.options.val1 + " does not equal " + this.options.val2;
+    };
+
+    FailedAssertionMessage.prototype["true"] = function() {
+      return "" + this.options.exp + " is not true";
+    };
+
+    FailedAssertionMessage.prototype.toString = function() {
       if (this[this.type]) {
         return this[this.type]();
       } else {
@@ -218,17 +256,11 @@ window.Janitor.Stitch = {};
       }
     };
 
-    _Class.prototype.equal = function() {
-      return "" + this.options.val1 + " does not equal " + this.options.val2;
-    };
-
-    _Class.prototype["true"] = function() {
-      return "" + this.options.exp + " is not true";
-    };
-
-    return _Class;
+    return FailedAssertionMessage;
 
   })();
+
+}).call(this);
 }, "main": function(exports, require, module) {
   module.exports = {
     TestCase: require('./test_case'),
@@ -252,7 +284,7 @@ window.Janitor.Stitch = {};
       _Class.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.presenter_class = ConsolePresenter;
+    _Class.prototype.presenterClass = ConsolePresenter;
 
     _Class.prototype.tests = function() {
       var file, _i, _len, _ref, _results;
@@ -275,9 +307,9 @@ window.Janitor.Stitch = {};
 
 }).call(this);
 }, "presenter": function(exports, require, module) {(function() {
-  var FailedAssertMessageResolver;
+  var FailedAssertionMessage;
 
-  FailedAssertMessageResolver = require('./failed_assert_message_resolver');
+  FailedAssertionMessage = require('./failed_assertion_message');
 
   module.exports = (function() {
 
@@ -288,7 +320,7 @@ window.Janitor.Stitch = {};
       this.options = options;
       this.completed = 0;
       this.succeeded_asserts = 0;
-      this.failed_asserts = 0;
+      this.failedAsserts = 0;
       this.asserts = 0;
       _ref = this.tests;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -303,15 +335,15 @@ window.Janitor.Stitch = {};
     }
 
     _Class.prototype.handleCompletedRun = function(run) {
-      var failed_assert, _i, _len, _ref, _results;
-      this.asserts += run.failed_asserts.length + run.succeeded_asserts_count;
-      this.failed_asserts += run.failed_asserts.length;
-      this.succeeded_asserts += run.succeeded_asserts_count;
-      _ref = run.failed_asserts;
+      var failedAssert, _i, _len, _ref, _results;
+      this.asserts += run.failedAsserts.length + run.succeededAssertsCount;
+      this.failedAsserts += run.failedAsserts.length;
+      this.succeeded_asserts += run.succeededAssertsCount;
+      _ref = run.failedAsserts;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        failed_assert = _ref[_i];
-        _results.push(this.outputFailedAssert(failed_assert));
+        failedAssert = _ref[_i];
+        _results.push(this.outputFailedAssert(failedAssert));
       }
       return _results;
     };
@@ -321,16 +353,16 @@ window.Janitor.Stitch = {};
       if (this.completed === this.tests.length) return this.complete();
     };
 
-    _Class.prototype.failedAssertDescription = function(failed_assert) {
-      return "" + failed_assert.run.constructor.name + "[" + failed_assert.run.method_name + "]: " + (this.failedAssertMessage(failed_assert));
+    _Class.prototype.failedAssertDescription = function(failedAssert) {
+      return "" + failedAssert.run.constructor.name + "[" + failedAssert.run.methodName + "]: " + (this.failedAssertMessage(failedAssert));
     };
 
-    _Class.prototype.failedAssertMessage = function(failed_assert) {
-      return new FailedAssertMessageResolver(failed_assert).message();
+    _Class.prototype.failedAssertMessage = function(failedAssert) {
+      return new FailedAssertionMessage(failedAssert).toString();
     };
 
     _Class.prototype.summaryMessage = function() {
-      return "COMPLETE: " + this.asserts + " asserts, " + this.failed_asserts + " failed, " + this.succeeded_asserts + " succeeded";
+      return "COMPLETE: " + this.asserts + " asserts, " + this.failedAsserts + " failed, " + this.succeeded_asserts + " succeeded";
     };
 
     return _Class;
@@ -347,7 +379,7 @@ window.Janitor.Stitch = {};
 
     _Class.prototype.run = function() {
       var Test, _i, _len, _ref, _results;
-      new this.presenter_class(this.tests(), this.options);
+      new this.presenterClass(this.tests(), this.options);
       _ref = this.tests();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -361,9 +393,9 @@ window.Janitor.Stitch = {};
 
   })();
 }, "test_case": function(exports, require, module) {(function() {
-  var Asserts, EventEmitter, Utils;
+  var Assertsions, EventEmitter, Utils;
 
-  Asserts = require('./asserts');
+  Assertsions = require('./assertions');
 
   EventEmitter = require('./event_emitter');
 
@@ -374,14 +406,14 @@ window.Janitor.Stitch = {};
     _Class.runs = [];
 
     _Class.runAll = function() {
-      var method_name, _i, _len, _ref, _results;
+      var methodName, _i, _len, _ref, _results;
       this.completed = 0;
       if (this.testMethodNames().length > 0) {
         _ref = this.testMethodNames();
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          method_name = _ref[_i];
-          _results.push(this.run(method_name));
+          methodName = _ref[_i];
+          _results.push(this.run(methodName));
         }
         return _results;
       } else {
@@ -389,10 +421,10 @@ window.Janitor.Stitch = {};
       }
     };
 
-    _Class.run = function(method_name) {
+    _Class.run = function(methodName) {
       var run;
       var _this = this;
-      run = new this(method_name);
+      run = new this(methodName);
       run.bind('completed', function() {
         return _this.runCompleted(run);
       });
@@ -411,37 +443,37 @@ window.Janitor.Stitch = {};
     };
 
     _Class.testMethodNames = function() {
-      var method_name, _i, _len, _ref, _results;
+      var methodName, _i, _len, _ref, _results;
       _ref = Object.keys(this.prototype);
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        method_name = _ref[_i];
-        if (method_name.substr(0, 5) === 'test ' || this.methodNameIsAsync(method_name)) {
-          _results.push(method_name);
+        methodName = _ref[_i];
+        if (methodName.substr(0, 5) === 'test ' || this.methodNameIsAsync(methodName)) {
+          _results.push(methodName);
         }
       }
       return _results;
     };
 
-    _Class.methodNameIsAsync = function(method_name) {
-      return method_name.substr(0, 11) === 'async test ';
+    _Class.methodNameIsAsync = function(methodName) {
+      return methodName.substr(0, 11) === 'async test ';
     };
 
-    function _Class(method_name) {
-      this.method_name = method_name;
-      this.succeeded_asserts_count = 0;
-      this.failed_asserts = [];
+    function _Class(methodName) {
+      this.methodName = methodName;
+      this.succeededAssertsCount = 0;
+      this.failedAsserts = [];
     }
 
     _Class.prototype.run = function() {
       if (this.setup) this.setup();
-      this[this.method_name]();
+      this[this.methodName]();
       if (this.teardown) this.teardown();
       if (!this.async()) return this.complete();
     };
 
     _Class.prototype.async = function() {
-      return this.constructor.methodNameIsAsync(this.method_name);
+      return this.constructor.methodNameIsAsync(this.methodName);
     };
 
     _Class.prototype.complete = function() {
@@ -449,12 +481,12 @@ window.Janitor.Stitch = {};
       return this.trigger('completed');
     };
 
-    _Class.prototype.store_assert = function(type, succeeded, options) {
+    _Class.prototype.storeAssert = function(type, succeeded, options) {
       if (options == null) options = {};
       if (succeeded) {
-        return this.succeeded_asserts_count += 1;
+        return this.succeededAssertsCount += 1;
       } else {
-        return this.failed_asserts.push({
+        return this.failedAsserts.push({
           type: type,
           succeeded: succeeded,
           options: options,
@@ -464,14 +496,14 @@ window.Janitor.Stitch = {};
     };
 
     _Class.prototype.succeeded = function() {
-      return this.completed && this.failed_asserts === 0;
+      return this.completed && this.failedAsserts === 0;
     };
 
     return _Class;
 
   })();
 
-  Utils.extend(module.exports.prototype, Asserts);
+  Utils.extend(module.exports.prototype, Assertsions);
 
   Utils.extend(module.exports.prototype, EventEmitter);
 
