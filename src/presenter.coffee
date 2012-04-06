@@ -1,4 +1,4 @@
-FailedAssertMessageResolver = require './failed_assert_message_resolver'
+FailedAssertMessageResolver = require './failed_assertion_message'
 
 module.exports = class
   constructor: (@tests, @options) ->
