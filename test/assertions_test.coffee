@@ -2,7 +2,7 @@ Janitor = require '../.'
 Assertions = require '../src/assertions'
 Utils = require '../src/utils'
 
-module.exports = class extends Janitor.TestCase
+module.exports = class AssertionsTest extends Janitor.TestCase
   setup: ->
     class Assertable
       store_assert: (type, succeeded, options) ->
@@ -101,3 +101,29 @@ module.exports = class extends Janitor.TestCase
     @assertEqual 'refute_throw', assert.type
     @assertEqual callback, assert.options.callback
     @assertEqual 'Boom!', assert.options.error.message
+
+  'test passing all assertion': ->
+    persons = [
+      { name: 'Ras', age: 26 },
+      { name: 'Jeff', age: 22 }
+    ]
+    isAdult = (item) -> item.age >= 20
+    
+    @assertable.assertAll persons, isAdult
+    assert = @assertable.last_assert
+    @assert assert.succeeded
+    @assertEqual 'all', assert.type
+    @assertEqual isAdult, assert.options.callback
+  
+  'test failing all assertion': ->
+    persons = [
+      { name: 'Ras', age: 26 },
+      { name: 'Jeff', age: 14 }
+    ]
+    isAdult = (item) -> item.age >= 20
+    
+    @assertable.assertAll persons, isAdult
+    assert = @assertable.last_assert
+    @assert !assert.succeeded
+    @assertEqual 'all', assert.type
+    @assertEqual isAdult, assert.options.callback

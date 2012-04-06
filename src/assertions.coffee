@@ -34,3 +34,10 @@ module.exports =
   assertContains: (container, value) ->
     result = container.indexOf(value) != -1
     @store_assert 'contains', result, {container, value}
+  
+  assertAll: (enumerable, callback) ->
+    success = true
+    enumerable.forEach (item) ->
+      success = callback(item) if success
+    
+    @store_assert 'all', success, { callback }
