@@ -8,12 +8,12 @@ module.exports = class
   @runAll: ->
     @completed = 0
     if @testMethodNames().length > 0
-      @run method_name for method_name in @testMethodNames()
+      @run methodName for methodName in @testMethodNames()
     else
       @complete()
   
-  @run: (method_name) ->
-    run = new @ method_name
+  @run: (methodName) ->
+    run = new @ methodName
     run.bind 'completed', => @runCompleted(run)
     run.run()
     @runs.push run
@@ -27,36 +27,36 @@ module.exports = class
     @trigger 'completed'
 
   @testMethodNames: ->
-    (method_name for method_name in Object.keys(@prototype) when method_name.substr(0,5) == 'test ' or @methodNameIsAsync(method_name))
+    (methodName for methodName in Object.keys(@prototype) when methodName.substr(0,5) == 'test ' or @methodNameIsAsync(methodName))
     
-  @methodNameIsAsync: (method_name) ->
-    method_name.substr(0,11) == 'async test '
+  @methodNameIsAsync: (methodName) ->
+    methodName.substr(0,11) == 'async test '
   
-  constructor: (@method_name) ->
-    @succeeded_asserts_count = 0
-    @failed_asserts = []
+  constructor: (@methodName) ->
+    @succeededAssertsCount = 0
+    @failedAsserts = []
   
   run: ->
     @setup() if @setup
-    @[@method_name]()
+    @[@methodName]()
     @teardown() if @teardown
     @complete() unless @async()
   
   async: ->
-    @constructor.methodNameIsAsync @method_name
+    @constructor.methodNameIsAsync @methodName
   
   complete: ->
     @completed = true
     @trigger 'completed'
   
-  store_assert: (type, succeeded, options = {})->
+  storeAssert: (type, succeeded, options = {})->
     if succeeded
-      @succeeded_asserts_count += 1
+      @succeededAssertsCount += 1
     else
-      @failed_asserts.push({type, succeeded, options, run: @})
+      @failedAsserts.push({type, succeeded, options, run: @})
       
   succeeded: ->
-    @completed && @failed_asserts == 0
+    @completed && @failedAsserts == 0
 
 Utils.extend module.exports.prototype, Assertsions
 Utils.extend module.exports.prototype, EventEmitter

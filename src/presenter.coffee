@@ -4,7 +4,7 @@ module.exports = class
   constructor: (@tests, @options) ->
     @completed = 0
     @succeeded_asserts = 0
-    @failed_asserts = 0
+    @failedAsserts = 0
     @asserts = 0
     
     for Test in @tests
@@ -12,21 +12,21 @@ module.exports = class
       Test.bind 'completed', => @checkComplete()
 
   handleCompletedRun: (run) ->
-    @asserts += run.failed_asserts.length + run.succeeded_asserts_count
-    @failed_asserts += run.failed_asserts.length
-    @succeeded_asserts += run.succeeded_asserts_count
+    @asserts += run.failedAsserts.length + run.succeededAssertsCount
+    @failedAsserts += run.failedAsserts.length
+    @succeeded_asserts += run.succeededAssertsCount
     
-    @outputFailedAssert failed_assert for failed_assert in run.failed_asserts
+    @outputFailedAssert failedAssert for failedAssert in run.failedAsserts
       
   checkComplete: ->
     @completed += 1
     @complete() if @completed == @tests.length
   
-  failedAssertDescription: (failed_assert) ->
-    "#{failed_assert.run.constructor.name}[#{failed_assert.run.method_name}]: #{@failedAssertMessage(failed_assert)}"
+  failedAssertDescription: (failedAssert) ->
+    "#{failedAssert.run.constructor.name}[#{failedAssert.run.methodName}]: #{@failedAssertMessage(failedAssert)}"
     
-  failedAssertMessage: (failed_assert) ->
-    new FailedAssertMessageResolver(failed_assert).message()
+  failedAssertMessage: (failedAssert) ->
+    new FailedAssertMessageResolver(failedAssert).message()
     
   summaryMessage: ->
-    "COMPLETE: #{@asserts} asserts, #{@failed_asserts} failed, #{@succeeded_asserts} succeeded"
+    "COMPLETE: #{@asserts} asserts, #{@failedAsserts} failed, #{@succeeded_asserts} succeeded"

@@ -1,8 +1,8 @@
 Presenter = require './presenter'
 
 module.exports = class extends Presenter
-  outputFailedAssert: (failed_assert) ->
-    text = @failedAssertDescription failed_assert
+  outputFailedAssert: (failedAssert) ->
+    text = @failedAssertDescription failedAssert
     el = document.createElement 'div'
     el.innerHTML = text
     el.style.color = 'red'

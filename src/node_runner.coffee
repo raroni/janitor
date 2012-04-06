@@ -3,7 +3,7 @@ Runner = require './runner'
 Glob = require 'glob'
 
 module.exports = class extends Runner
-  presenter_class: ConsolePresenter
+  presenterClass: ConsolePresenter
   
   tests: ->
     (require(file) for file in @files())
