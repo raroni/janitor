@@ -16,16 +16,16 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     assert = @assertable.lastAssert
     @assert assert.succeeded
     @assertEqual 'equal', assert.type
-    @assertEqual 1, assert.options.val1
-    @assertEqual 1, assert.options.val2
+    @assertEqual 1, assert.options.expected
+    @assertEqual 1, assert.options.actual
     
   'test failing equal assertion': ->
     @assertable.assertEqual 2,3
     assert = @assertable.lastAssert
     @assert !assert.succeeded
     @assertEqual 'equal', assert.type
-    @assertEqual 2, assert.options.val1
-    @assertEqual 3, assert.options.val2
+    @assertEqual 2, assert.options.expected
+    @assertEqual 3, assert.options.actual
     
   'test passing truth assertion': ->
     @assertable.assert true

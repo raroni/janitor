@@ -1,6 +1,7 @@
 module.exports =
-  assertEqual: (val1, val2) ->
-    @storeAssert 'equal', val1 == val2, {val1, val2}
+  assertEqual: (expected, actual) ->
+    success = expected == actual
+    @storeAssert 'equal', success, {expected, actual}
   
   assert: (exp) ->
     @storeAssert 'true', exp, {exp}
