@@ -252,7 +252,7 @@ window.Janitor.Stitch = {};
     }
 
     FailedAssertionMessage.prototype.equal = function() {
-      return "" + this.options.val1 + " does not equal " + this.options.val2;
+      return "" + this.options.actual + " does not equal " + this.options.expected;
     };
 
     FailedAssertionMessage.prototype["true"] = function() {
