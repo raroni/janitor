@@ -46,3 +46,7 @@ module.exports =
   assertInDelta: (expected, actual, delta) ->
     success = expected-delta < actual && expected+delta > actual
     @storeAssert 'inDelta', success, { expected, actual, delta }
+  
+  refuteEqual: (expected, actual) ->
+    success = expected != actual
+    @storeAssert 'refuteEqual', success, {expected, actual}

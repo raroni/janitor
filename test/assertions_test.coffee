@@ -145,3 +145,19 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     @assertEqual 0.1, assert.options.delta
     @assertEqual 25, assert.options.expected
     @assertEqual 25.2, assert.options.actual
+  
+  'test passing equal refutation': ->
+    @assertable.refuteEqual 2, 3
+    assert = @assertable.lastAssert
+    @assert assert.succeeded
+    @assertEqual 'refuteEqual', assert.type
+    @assertEqual 2, assert.options.expected
+    @assertEqual 3, assert.options.actual
+  
+  'test failing equal refutation': ->
+    @assertable.refuteEqual 3, 3
+    assert = @assertable.lastAssert
+    @assert !assert.succeeded
+    @assertEqual 'refuteEqual', assert.type
+    @assertEqual 3, assert.options.expected
+    @assertEqual 3, assert.options.actual

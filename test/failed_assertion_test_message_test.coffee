@@ -31,3 +31,13 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
     
     message = new FailedAssertionMessage failedAssertion
     @assertEqual '25.2 is not within 25±0.1', message.toString()
+  
+  'test refute equal': ->
+    failedAssertion =
+      type: 'refuteEqual'
+      options:
+        expected: 2
+        actual: 2
+    
+    message = new FailedAssertionMessage failedAssertion
+    @assertEqual '2 equals 2', message.toString()
