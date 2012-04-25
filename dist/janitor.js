@@ -53,10 +53,12 @@ window.Janitor.Stitch = {};
   return this.require.define;
 }).call(this)({"assertions": function(exports, require, module) {
   module.exports = {
-    assertEqual: function(val1, val2) {
-      return this.storeAssert('equal', val1 === val2, {
-        val1: val1,
-        val2: val2
+    assertEqual: function(expected, actual) {
+      var success;
+      success = expected === actual;
+      return this.storeAssert('equal', success, {
+        expected: expected,
+        actual: actual
       });
     },
     assert: function(exp) {
