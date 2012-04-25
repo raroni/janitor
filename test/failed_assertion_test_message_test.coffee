@@ -20,3 +20,14 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
     
     message = new FailedAssertionMessage failedAssertion
     @assertEqual 'false is not true', message.toString()
+  
+  'test in delta': ->
+    failedAssertion =
+      type: 'inDelta'
+      options:
+        expected: 25
+        actual: 25.2
+        delta: 0.1
+    
+    message = new FailedAssertionMessage failedAssertion
+    @assertEqual '25.2 is not within 25±0.1', message.toString()

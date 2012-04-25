@@ -127,3 +127,21 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     @assert !assert.succeeded
     @assertEqual 'all', assert.type
     @assertEqual isAdult, assert.options.callback
+  
+  'test passing in delta assertion': ->
+    @assertable.assertInDelta 25, 25.1, 0.25
+    assert = @assertable.lastAssert
+    @assert assert.succeeded
+    @assertEqual 'inDelta', assert.type
+    @assertEqual 0.25, assert.options.delta
+    @assertEqual 25, assert.options.expected
+    @assertEqual 25.1, assert.options.actual
+  
+  'test failing in delta assertion': ->
+    @assertable.assertInDelta 25, 25.2, 0.1
+    assert = @assertable.lastAssert
+    @assert !assert.succeeded
+    @assertEqual 'inDelta', assert.type
+    @assertEqual 0.1, assert.options.delta
+    @assertEqual 25, assert.options.expected
+    @assertEqual 25.2, assert.options.actual

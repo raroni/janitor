@@ -113,6 +113,15 @@ window.Janitor.Stitch = {};
       return this.storeAssert('all', success, {
         callback: callback
       });
+    },
+    assertInDelta: function(expected, actual, delta) {
+      var success;
+      success = expected - delta < actual && expected + delta > actual;
+      return this.storeAssert('inDelta', success, {
+        expected: expected,
+        actual: actual,
+        delta: delta
+      });
     }
   };
 }, "browser_presenter": function(exports, require, module) {(function() {
@@ -246,6 +255,10 @@ window.Janitor.Stitch = {};
 
     FailedAssertionMessage.prototype["true"] = function() {
       return "" + this.options.exp + " is not true";
+    };
+
+    FailedAssertionMessage.prototype.inDelta = function() {
+      return "" + this.options.actual + " is not within " + this.options.expected + "±" + this.options.delta;
     };
 
     FailedAssertionMessage.prototype.toString = function() {

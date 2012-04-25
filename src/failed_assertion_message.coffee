@@ -9,6 +9,9 @@ module.exports = class FailedAssertionMessage
   true: ->
     "#{@options.exp} is not true"
   
+  inDelta: ->
+    "#{@options.actual} is not within #{@options.expected}±#{@options.delta}"
+  
   toString: ->
     if @[@type]
       @[@type]()

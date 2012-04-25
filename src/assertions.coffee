@@ -41,3 +41,7 @@ module.exports =
       success = callback(item) if success
     
     @storeAssert 'all', success, { callback }
+  
+  assertInDelta: (expected, actual, delta) ->
+    success = expected-delta < actual && expected+delta > actual
+    @storeAssert 'inDelta', success, { expected, actual, delta }
