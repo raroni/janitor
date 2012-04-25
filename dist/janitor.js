@@ -124,6 +124,14 @@ window.Janitor.Stitch = {};
         actual: actual,
         delta: delta
       });
+    },
+    refuteEqual: function(expected, actual) {
+      var success;
+      success = expected !== actual;
+      return this.storeAssert('refuteEqual', success, {
+        expected: expected,
+        actual: actual
+      });
     }
   };
 }, "browser_presenter": function(exports, require, module) {(function() {
@@ -261,6 +269,10 @@ window.Janitor.Stitch = {};
 
     FailedAssertionMessage.prototype.inDelta = function() {
       return "" + this.options.actual + " is not within " + this.options.expected + "±" + this.options.delta;
+    };
+
+    FailedAssertionMessage.prototype.refuteEqual = function() {
+      return "" + this.options.actual + " equals " + this.options.expected;
     };
 
     FailedAssertionMessage.prototype.toString = function() {
