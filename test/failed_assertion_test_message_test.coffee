@@ -6,11 +6,11 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
     failedAssertion =
       type: 'equal'
       options:
-        val1: 'a'
-        val2: 'b'
+        expected: 'a'
+        actual: 'b'
     
     message = new FailedAssertionMessage failedAssertion
-    @assertEqual 'a does not equal b', message.toString()
+    @assertEqual 'b does not equal a', message.toString()
   
   'test true': ->
     failedAssertion =

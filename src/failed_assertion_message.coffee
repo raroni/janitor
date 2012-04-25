@@ -4,7 +4,7 @@ module.exports = class FailedAssertionMessage
     @options = failedAssert.options
     
   equal: ->
-    "#{@options.val1} does not equal #{@options.val2}"
+    "#{@options.actual} does not equal #{@options.expected}"
   
   true: ->
     "#{@options.exp} is not true"
