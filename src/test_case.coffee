@@ -40,9 +40,9 @@ module.exports = class
     @setup() if @setup
     @[@methodName]()
     @teardown() if @teardown
-    @complete() unless @async()
+    @complete() unless @isAsync()
   
-  async: ->
+  isAsync: ->
     @constructor.methodNameIsAsync @methodName
   
   complete: ->
