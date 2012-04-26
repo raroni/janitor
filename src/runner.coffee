@@ -6,9 +6,5 @@ module.exports = class
   
   activeTests: ->
     tests = @tests()
-    
-    soloTest = null
-    tests.forEach (test) ->
-      soloTest = test if test.solo
-    
+    soloTest = tests.filter((test) -> test.solo)[0]
     if soloTest then [soloTest] else tests
