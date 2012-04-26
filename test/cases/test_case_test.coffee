@@ -55,3 +55,31 @@ module.exports = class TestCaseTest extends Janitor.TestCase
     @refute failedAssertion.refutation
     @assertEqual 1, failedAssertion.result.expected
     @assertEqual 2, failedAssertion.result.actual
+  
+  'test passing refuteEqual': ->
+    class SomethingTest extends Janitor.TestCase
+      'test me': ->
+        @refuteEqual 2, 1
+        
+    testCase = new SomethingTest 'test me'
+    testCase.run()
+    
+    @assertEqual 1, testCase.succeededAssertsCount
+    @assertEqual 0, testCase.failedAsserts.length
+  
+  'test failing refuteEqual': ->
+    class SomethingTest extends Janitor.TestCase
+      'test me': ->
+        @refuteEqual 2, 2
+    
+    testCase = new SomethingTest 'test me'
+    testCase.run()
+    
+    @assertEqual 0, testCase.succeededAssertsCount
+    @assertEqual 1, testCase.failedAsserts.length
+    
+    failedAssertion = testCase.failedAsserts[0]
+    @assertEqual 'equal', failedAssertion.type
+    @assert failedAssertion.refutation
+    @assertEqual 2, failedAssertion.result.expected
+    @assertEqual 2, failedAssertion.result.actual

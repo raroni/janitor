@@ -70,7 +70,7 @@ class TestCase
   
   runAssertion: (type, options) ->
     result = Assertions[type].apply null, options.args
-    result.success = !result.succes if options.refutation
+    result.success = !result.success if options.refutation
     @storeAssert type, options.refutation, result
 
 TestCase.addAssertionMethods key for key in Object.keys(Assertions)
