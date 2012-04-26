@@ -555,7 +555,7 @@ window.Janitor.Stitch = {};
     TestCase.prototype.runAssertion = function(type, options) {
       var result;
       result = Assertions[type].apply(null, options.args);
-      if (options.refutation) result.success = !result.succes;
+      if (options.refutation) result.success = !result.success;
       return this.storeAssert(type, options.refutation, result);
     };
 
