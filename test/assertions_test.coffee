@@ -11,7 +11,7 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     
   'test failing equal': ->
     result = Assertions.equal 2, 3
-    @assert !result.success
+    @refute result.success
     @assertEqual 2, result.expected
     @assertEqual 3, result.actual
     
@@ -22,7 +22,7 @@ module.exports = class AssertionsTest extends Janitor.TestCase
   
   'test failing truthy': ->
     result = Assertions.truthy false
-    @assert !result.success
+    @refute result.success
     @assertEqual false, result.value
   
   'test passing throws': ->
@@ -41,14 +41,14 @@ module.exports = class AssertionsTest extends Janitor.TestCase
   'test failing throws': ->
     callback = -> "Forget it! I won't throw anything"
     result = Assertions.throws callback
-    @assert !result.success
+    @refute result.success
     @assertEqual callback, result.callback
   
   'test throws fails if second argument is a function that returns false': ->
     callback = -> throw new Error 'Secret!'
     check = (e) -> e.message == 'dunno'
     result = Assertions.throws callback, check
-    @assert !result.success
+    @refute result.success
     @assertEqual callback, result.callback
   
   'test passing contains': ->
@@ -78,7 +78,7 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     isAdult = (item) -> item.age >= 20
     
     result = Assertions.all persons, isAdult
-    @assert !result.success
+    @refute result.success
     @assertEqual isAdult, result.callback
   
   'test passing in delta': ->
@@ -90,7 +90,7 @@ module.exports = class AssertionsTest extends Janitor.TestCase
   
   'test failing in delta': ->
     result = Assertions.inDelta 25, 25.2, 0.1
-    @assert !result.success
+    @refute result.success
     @assertEqual 0.1, result.delta
     @assertEqual 25, result.expected
     @assertEqual 25.2, result.actual

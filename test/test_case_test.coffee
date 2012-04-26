@@ -52,6 +52,6 @@ module.exports = class TestCaseTest extends Janitor.TestCase
     
     failedAssertion = testCase.failedAsserts[0]
     @assertEqual 'equal', failedAssertion.type
-    @assert !failedAssertion.refutation
+    @refute failedAssertion.refutation
     @assertEqual 1, failedAssertion.result.expected
     @assertEqual 2, failedAssertion.result.actual
