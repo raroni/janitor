@@ -345,8 +345,8 @@ window.Janitor.Stitch = {};
       _ref = this.tests;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         Test = _ref[_i];
-        Test.bind('runCompleted', function(test_run) {
-          return _this.handleCompletedRun(test_run);
+        Test.bind('runCompleted', function(testRun) {
+          return _this.handleCompletedRun(testRun);
         });
         Test.bind('completed', function() {
           return _this.checkComplete();
@@ -398,12 +398,12 @@ window.Janitor.Stitch = {};
     }
 
     _Class.prototype.run = function() {
-      var Test, _i, _len, _ref, _results;
-      new this.presenterClass(this.activeTests(), this.options);
-      _ref = this.tests();
+      var Test, tests, _i, _len, _results;
+      tests = this.activeTests();
+      new this.presenterClass(tests, this.options);
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        Test = _ref[_i];
+      for (_i = 0, _len = tests.length; _i < _len; _i++) {
+        Test = tests[_i];
         _results.push(Test.runAll());
       }
       return _results;
@@ -412,11 +412,14 @@ window.Janitor.Stitch = {};
     _Class.prototype.activeTests = function() {
       var soloTest, tests;
       tests = this.tests();
-      soloTest = null;
-      tests.forEach(function(test) {
-        if (test.solo) return soloTest = test;
-      });
-      return soloTest || tests;
+      soloTest = tests.filter(function(test) {
+        return test.solo;
+      })[0];
+      if (soloTest) {
+        return [soloTest];
+      } else {
+        return tests;
+      }
     };
 
     return _Class;
