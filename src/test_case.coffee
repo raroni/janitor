@@ -73,7 +73,7 @@ class TestCase
     result.success = !result.succes if options.refutation
     @storeAssert type, options.refutation, result
 
-TestCase.addAssertionMethods key, value for key, value of Assertions
+TestCase.addAssertionMethods key for key in Object.keys(Assertions)
 
 Utils.extend TestCase.prototype, EventEmitter
 Utils.extend TestCase, EventEmitter
