@@ -7,6 +7,7 @@ module.exports = class extends Presenter
     el.innerHTML = text
     el.style.color = 'red'
     @options.el.appendChild el
+  
   complete: ->
     el = document.createElement 'div'
     el.innerHTML = @summaryMessage()

@@ -54,7 +54,7 @@ module.exports = class
       @succeededAssertsCount += 1
     else
       @failedAsserts.push({type, succeeded, options, run: @})
-      
+  
   succeeded: ->
     @completed && @failedAsserts == 0
 
