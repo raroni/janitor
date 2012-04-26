@@ -2,7 +2,7 @@ Assertions = require './assertions'
 EventEmitter = require './event_emitter'
 Utils = require './utils'
 
-module.exports = class
+class TestCase
   @runs = []
   
   @runAll: ->
@@ -32,6 +32,16 @@ module.exports = class
   @methodNameIsAsync: (methodName) ->
     methodName.substr(0,11) == 'async test '
   
+  @addAssertionMethods: (type) ->
+    @addAssertionMethod type
+    @addAssertionMethod type, true
+  
+  @addAssertionMethod: (type, refutation) ->
+    prefix = if refutation then 'refute' else 'assert'
+    suffix = if type == 'truthy' then '' else Utils.firstToUpper(type)
+    name = prefix + suffix
+    @prototype[name] = (args...) -> @runAssertion type, { args, refutation }
+  
   constructor: (@methodName) ->
     @succeededAssertsCount = 0
     @failedAsserts = []
@@ -60,37 +70,12 @@ module.exports = class
   
   runAssertion: (type, options) ->
     result = Assertions[type].apply null, options.args
-    
     result.success = !result.succes if options.refutation
-    
     @storeAssert type, options.refutation, result
-  
-  ######### API:
-  
-  assertEqual: (args...) ->
-    @runAssertion 'equal', { args }
-  
-  refuteEqual: (expected, actual) ->
-    @runAssertion 'equal', { args, refutation: true }
-  
-  assert: (args...) ->
-    @runAssertion 'truthy', { args, refutation: true }
-  
-  assertThrows: (args...) ->
-    @runAssertion 'throws', { args }
-  
-  refuteThrows: (args...) ->
-    @runAssertion 'throws', { args, refutation: true }
-  
-  assertContains: (args...) ->
-    @runAssertion 'contains', { args }
-  
-  assertAll: (args...) ->
-    @runAssertion 'all', { args }
-  
-  assertInDelta: (args...) ->
-    @runAssertion 'inDelta', { args }
 
-#Utils.extend module.exports.prototype, Assertions
-Utils.extend module.exports.prototype, EventEmitter
-Utils.extend module.exports, EventEmitter
+TestCase.addAssertionMethods key, value for key, value of Assertions
+
+Utils.extend TestCase.prototype, EventEmitter
+Utils.extend TestCase, EventEmitter
+
+module.exports = TestCase

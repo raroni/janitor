@@ -1,7 +1,7 @@
 Janitor = require '../.'
 Utils = require '../src/utils'
 
-module.exports = class extends Janitor.TestCase
+module.exports = class UtilsTest extends Janitor.TestCase
   'test extend': ->
     obj1 =
       name: 'Ras'

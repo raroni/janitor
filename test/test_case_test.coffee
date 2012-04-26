@@ -3,7 +3,7 @@ Assertions = require '../src/assertions'
 Utils = require '../src/utils'
 
 module.exports = class TestCaseTest extends Janitor.TestCase
-  'test simple case': ->
+  'test simplest case': ->
     class SomethingTest extends Janitor.TestCase
       'test me': ->
         @assertEqual 1, 1
@@ -27,3 +27,31 @@ module.exports = class TestCaseTest extends Janitor.TestCase
     
     @assertEqual 2, testCase.succeededAssertsCount
     @assertEqual 3, testCase.failedAsserts.length
+  
+  'test passing assertEqual': ->
+    class SomethingTest extends Janitor.TestCase
+      'test me': ->
+        @assertEqual 1, 1
+    
+    testCase = new SomethingTest 'test me'
+    testCase.run()
+    
+    @assertEqual 1, testCase.succeededAssertsCount
+    @assertEqual 0, testCase.failedAsserts.length
+  
+  'test failing assertEqual': ->
+    class SomethingTest extends Janitor.TestCase
+      'test me': ->
+        @assertEqual 1, 2
+    
+    testCase = new SomethingTest 'test me'
+    testCase.run()
+    
+    @assertEqual 0, testCase.succeededAssertsCount
+    @assertEqual 1, testCase.failedAsserts.length
+    
+    failedAssertion = testCase.failedAsserts[0]
+    @assertEqual 'equal', failedAssertion.type
+    @assert !failedAssertion.refutation
+    @assertEqual 1, failedAssertion.result.expected
+    @assertEqual 2, failedAssertion.result.actual

@@ -1,3 +1,5 @@
+Utils = require './utils'
+
 module.exports = class FailedAssertionMessage
   constructor: (failedAssert) ->
     @type = failedAssert.type
@@ -24,4 +26,4 @@ module.exports = class FailedAssertionMessage
   
   methodName: ->
     prefix = if @refutation then 'refute' else 'assert'
-    prefix + @type.replace(/.{1}/, (v) -> v.toUpperCase())
+    prefix + Utils.firstToUpper(@type)
