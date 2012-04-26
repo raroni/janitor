@@ -2,7 +2,7 @@ Janitor = require '../.'
 EventEmitter = require '../src/event_emitter'
 Utils = require '../src/utils'
 
-module.exports = class extends Janitor.TestCase
+module.exports = class EventEmitterTest extends Janitor.TestCase
   setup: ->
     class User
     Utils.extend User.prototype, EventEmitter

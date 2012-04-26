@@ -5,18 +5,18 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
   'test equal': ->
     failedAssertion =
       type: 'equal'
-      options:
+      result:
         expected: 'a'
         actual: 'b'
     
     message = new FailedAssertionMessage failedAssertion
     @assertEqual 'b does not equal a', message.toString()
   
-  'test true': ->
+  'test truthy': ->
     failedAssertion =
-      type: 'true'
-      options:
-        exp: false
+      type: 'truthy'
+      result:
+        value: false
     
     message = new FailedAssertionMessage failedAssertion
     @assertEqual 'false is not true', message.toString()
@@ -24,7 +24,7 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
   'test in delta': ->
     failedAssertion =
       type: 'inDelta'
-      options:
+      result:
         expected: 25
         actual: 25.2
         delta: 0.1
@@ -34,8 +34,9 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
   
   'test refute equal': ->
     failedAssertion =
-      type: 'refuteEqual'
-      options:
+      type: 'equal'
+      refutation: true
+      result:
         expected: 2
         actual: 2
     

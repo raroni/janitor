@@ -1,22 +1,27 @@
 module.exports = class FailedAssertionMessage
   constructor: (failedAssert) ->
     @type = failedAssert.type
-    @options = failedAssert.options
-    
-  equal: ->
-    "#{@options.actual} does not equal #{@options.expected}"
+    @result = failedAssert.result
+    @refutation = failedAssert.refutation
   
-  true: ->
-    "#{@options.exp} is not true"
+  assertEqual: ->
+    "#{@result.actual} does not equal #{@result.expected}"
   
-  inDelta: ->
-    "#{@options.actual} is not within #{@options.expected}±#{@options.delta}"
+  assertInDelta: ->
+    "#{@result.actual} is not within #{@result.expected}±#{@result.delta}"
   
   refuteEqual: ->
-    "#{@options.actual} equals #{@options.expected}"
+    "#{@result.actual} equals #{@result.expected}"
+  
+  assertTruthy: ->
+    "#{@result.value} is not true"
   
   toString: ->
-    if @[@type]
-      @[@type]()
+    if @[@methodName()]
+      @[@methodName()]()
     else
       "Unknown assert fail: #{@type}"
+  
+  methodName: ->
+    prefix = if @refutation then 'refute' else 'assert'
+    prefix + @type.replace(/.{1}/, (v) -> v.toUpperCase())

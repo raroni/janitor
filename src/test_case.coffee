@@ -1,4 +1,4 @@
-Assertsions = require './assertions'
+Assertions = require './assertions'
 EventEmitter = require './event_emitter'
 Utils = require './utils'
 
@@ -49,15 +49,48 @@ module.exports = class
     @completed = true
     @trigger 'completed'
   
-  storeAssert: (type, succeeded, options = {})->
-    if succeeded
+  storeAssert: (type, refutation, result)->
+    if result.success
       @succeededAssertsCount += 1
     else
-      @failedAsserts.push({type, succeeded, options, run: @})
+      @failedAsserts.push({type, refutation, result, run: @})
   
   succeeded: ->
     @completed && @failedAsserts == 0
+  
+  runAssertion: (type, options) ->
+    result = Assertions[type].apply null, options.args
+    
+    result.success = !result.succes if options.refutation
+    
+    @storeAssert type, options.refutation, result
+  
+  ######### API:
+  
+  assertEqual: (args...) ->
+    @runAssertion 'equal', { args }
+  
+  refuteEqual: (expected, actual) ->
+    @runAssertion 'equal', { args, refutation: true }
+  
+  assert: (args...) ->
+    @runAssertion 'truthy', { args, refutation: true }
+  
+  assertThrows: (args...) ->
+    @runAssertion 'throws', { args }
+  
+  refuteThrows: (args...) ->
+    @runAssertion 'throws', { args, refutation: true }
+  
+  assertContains: (args...) ->
+    @runAssertion 'contains', { args }
+  
+  assertAll: (args...) ->
+    @runAssertion 'all', { args }
+  
+  assertInDelta: (args...) ->
+    @runAssertion 'inDelta', { args }
 
-Utils.extend module.exports.prototype, Assertsions
+#Utils.extend module.exports.prototype, Assertions
 Utils.extend module.exports.prototype, EventEmitter
 Utils.extend module.exports, EventEmitter
