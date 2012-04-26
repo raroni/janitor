@@ -1,6 +1,6 @@
-Janitor = require '../.'
-Assertions = require '../src/assertions'
-Utils = require '../src/utils'
+Janitor = require '../../.'
+Assertions = require '../../src/assertions'
+Utils = require '../../src/utils'
 
 module.exports = class TestCaseTest extends Janitor.TestCase
   'test simplest case': ->

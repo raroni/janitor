@@ -1,6 +1,6 @@
-Janitor = require '../.'
-EventEmitter = require '../src/event_emitter'
-Utils = require '../src/utils'
+Janitor = require '../../.'
+EventEmitter = require '../../src/event_emitter'
+Utils = require '../../src/utils'
 
 module.exports = class EventEmitterTest extends Janitor.TestCase
   setup: ->

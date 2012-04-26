@@ -8,7 +8,7 @@ module.exports = class
     @asserts = 0
     
     for Test in @tests
-      Test.bind 'runCompleted', (test_run) => @handleCompletedRun(test_run)
+      Test.bind 'runCompleted', (testRun) => @handleCompletedRun(testRun)
       Test.bind 'completed', => @checkComplete()
 
   handleCompletedRun: (run) ->

@@ -53,20 +53,24 @@ window.Janitor.Stitch = {};
   return this.require.define;
 }).call(this)({"assertions": function(exports, require, module) {
   module.exports = {
-    assertEqual: function(expected, actual) {
+    equal: function(expected, actual) {
       var success;
       success = expected === actual;
-      return this.storeAssert('equal', success, {
+      return {
+        success: success,
         expected: expected,
         actual: actual
-      });
+      };
     },
-    assert: function(exp) {
-      return this.storeAssert('true', exp, {
-        exp: exp
-      });
+    truthy: function(value) {
+      var success;
+      success = !!value;
+      return {
+        success: success,
+        value: value
+      };
     },
-    assertThrows: function(callback, check) {
+    throws: function(callback, check) {
       var caught, error, success;
       caught = false;
       error = null;
@@ -77,61 +81,41 @@ window.Janitor.Stitch = {};
         error = thrownError;
       }
       success = caught && (!check || check(error));
-      return this.storeAssert('throw', success, {
+      return {
+        success: success,
         callback: callback,
         error: error
-      });
+      };
     },
-    refuteThrows: function(callback) {
-      var caught, error, success;
-      caught = false;
-      error = null;
-      try {
-        callback();
-      } catch (thrownError) {
-        caught = true;
-        error = thrownError;
-      }
-      success = !caught;
-      return this.storeAssert('refuteThrow', success, {
-        callback: callback,
-        error: error
-      });
-    },
-    assertContains: function(container, value) {
-      var result;
-      result = container.indexOf(value) !== -1;
-      return this.storeAssert('contains', result, {
+    contains: function(container, value) {
+      var success;
+      success = container.indexOf(value) !== -1;
+      return {
+        success: success,
         container: container,
         value: value
-      });
+      };
     },
-    assertAll: function(enumerable, callback) {
+    all: function(enumerable, callback) {
       var success;
       success = true;
       enumerable.forEach(function(item) {
         if (success) return success = callback(item);
       });
-      return this.storeAssert('all', success, {
+      return {
+        success: success,
         callback: callback
-      });
+      };
     },
-    assertInDelta: function(expected, actual, delta) {
+    inDelta: function(expected, actual, delta) {
       var success;
       success = expected - delta < actual && expected + delta > actual;
-      return this.storeAssert('inDelta', success, {
+      return {
+        success: success,
         expected: expected,
         actual: actual,
         delta: delta
-      });
-    },
-    refuteEqual: function(expected, actual) {
-      var success;
-      success = expected !== actual;
-      return this.storeAssert('refuteEqual', success, {
-        expected: expected,
-        actual: actual
-      });
+      };
     }
   };
 }, "browser_presenter": function(exports, require, module) {(function() {
@@ -250,37 +234,46 @@ window.Janitor.Stitch = {};
     }
   };
 }, "failed_assertion_message": function(exports, require, module) {(function() {
-  var FailedAssertionMessage;
+  var FailedAssertionMessage, Utils;
+
+  Utils = require('./utils');
 
   module.exports = FailedAssertionMessage = (function() {
 
     function FailedAssertionMessage(failedAssert) {
       this.type = failedAssert.type;
-      this.options = failedAssert.options;
+      this.result = failedAssert.result;
+      this.refutation = failedAssert.refutation;
     }
 
-    FailedAssertionMessage.prototype.equal = function() {
-      return "" + this.options.actual + " does not equal " + this.options.expected;
+    FailedAssertionMessage.prototype.assertEqual = function() {
+      return "" + this.result.actual + " does not equal " + this.result.expected;
     };
 
-    FailedAssertionMessage.prototype["true"] = function() {
-      return "" + this.options.exp + " is not true";
-    };
-
-    FailedAssertionMessage.prototype.inDelta = function() {
-      return "" + this.options.actual + " is not within " + this.options.expected + "±" + this.options.delta;
+    FailedAssertionMessage.prototype.assertInDelta = function() {
+      return "" + this.result.actual + " is not within " + this.result.expected + "±" + this.result.delta;
     };
 
     FailedAssertionMessage.prototype.refuteEqual = function() {
-      return "" + this.options.actual + " equals " + this.options.expected;
+      return "" + this.result.actual + " equals " + this.result.expected;
+    };
+
+    FailedAssertionMessage.prototype.assertTruthy = function() {
+      return "" + this.result.value + " is not true";
     };
 
     FailedAssertionMessage.prototype.toString = function() {
-      if (this[this.type]) {
-        return this[this.type]();
+      if (this[this.methodName()]) {
+        return this[this.methodName()]();
       } else {
         return "Unknown assert fail: " + this.type;
       }
+    };
+
+    FailedAssertionMessage.prototype.methodName = function() {
+      var prefix;
+      prefix = this.refutation ? 'refute' : 'assert';
+      return prefix + Utils.firstToUpper(this.type);
     };
 
     return FailedAssertionMessage;
@@ -406,7 +399,7 @@ window.Janitor.Stitch = {};
 
     _Class.prototype.run = function() {
       var Test, _i, _len, _ref, _results;
-      new this.presenterClass(this.tests(), this.options);
+      new this.presenterClass(this.activeTests(), this.options);
       _ref = this.tests();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -416,23 +409,34 @@ window.Janitor.Stitch = {};
       return _results;
     };
 
+    _Class.prototype.activeTests = function() {
+      var soloTest, tests;
+      tests = this.tests();
+      soloTest = null;
+      tests.forEach(function(test) {
+        if (test.solo) return soloTest = test;
+      });
+      return soloTest || tests;
+    };
+
     return _Class;
 
   })();
 }, "test_case": function(exports, require, module) {(function() {
-  var Assertsions, EventEmitter, Utils;
+  var Assertions, EventEmitter, TestCase, Utils, key, _i, _len, _ref;
+  var __slice = Array.prototype.slice;
 
-  Assertsions = require('./assertions');
+  Assertions = require('./assertions');
 
   EventEmitter = require('./event_emitter');
 
   Utils = require('./utils');
 
-  module.exports = (function() {
+  TestCase = (function() {
 
-    _Class.runs = [];
+    TestCase.runs = [];
 
-    _Class.runAll = function() {
+    TestCase.runAll = function() {
       var methodName, _i, _len, _ref, _results;
       this.completed = 0;
       if (this.testMethodNames().length > 0) {
@@ -448,7 +452,7 @@ window.Janitor.Stitch = {};
       }
     };
 
-    _Class.run = function(methodName) {
+    TestCase.run = function(methodName) {
       var run;
       var _this = this;
       run = new this(methodName);
@@ -459,17 +463,17 @@ window.Janitor.Stitch = {};
       return this.runs.push(run);
     };
 
-    _Class.runCompleted = function(run) {
+    TestCase.runCompleted = function(run) {
       this.trigger('runCompleted', run);
       this.completed += 1;
       if (this.completed === this.testMethodNames().length) return this.complete();
     };
 
-    _Class.complete = function() {
+    TestCase.complete = function() {
       return this.trigger('completed');
     };
 
-    _Class.testMethodNames = function() {
+    TestCase.testMethodNames = function() {
       var methodName, _i, _len, _ref, _results;
       _ref = Object.keys(this.prototype);
       _results = [];
@@ -482,59 +486,91 @@ window.Janitor.Stitch = {};
       return _results;
     };
 
-    _Class.methodNameIsAsync = function(methodName) {
+    TestCase.methodNameIsAsync = function(methodName) {
       return methodName.substr(0, 11) === 'async test ';
     };
 
-    function _Class(methodName) {
+    TestCase.addAssertionMethods = function(type) {
+      this.addAssertionMethod(type);
+      return this.addAssertionMethod(type, true);
+    };
+
+    TestCase.addAssertionMethod = function(type, refutation) {
+      var name, prefix, suffix;
+      prefix = refutation ? 'refute' : 'assert';
+      suffix = type === 'truthy' ? '' : Utils.firstToUpper(type);
+      name = prefix + suffix;
+      return this.prototype[name] = function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        return this.runAssertion(type, {
+          args: args,
+          refutation: refutation
+        });
+      };
+    };
+
+    function TestCase(methodName) {
       this.methodName = methodName;
       this.succeededAssertsCount = 0;
       this.failedAsserts = [];
     }
 
-    _Class.prototype.run = function() {
+    TestCase.prototype.run = function() {
       if (this.setup) this.setup();
       this[this.methodName]();
       if (this.teardown) this.teardown();
-      if (!this.async()) return this.complete();
+      if (!this.isAsync()) return this.complete();
     };
 
-    _Class.prototype.async = function() {
+    TestCase.prototype.isAsync = function() {
       return this.constructor.methodNameIsAsync(this.methodName);
     };
 
-    _Class.prototype.complete = function() {
+    TestCase.prototype.complete = function() {
       this.completed = true;
       return this.trigger('completed');
     };
 
-    _Class.prototype.storeAssert = function(type, succeeded, options) {
-      if (options == null) options = {};
-      if (succeeded) {
+    TestCase.prototype.storeAssert = function(type, refutation, result) {
+      if (result.success) {
         return this.succeededAssertsCount += 1;
       } else {
         return this.failedAsserts.push({
           type: type,
-          succeeded: succeeded,
-          options: options,
+          refutation: refutation,
+          result: result,
           run: this
         });
       }
     };
 
-    _Class.prototype.succeeded = function() {
+    TestCase.prototype.succeeded = function() {
       return this.completed && this.failedAsserts === 0;
     };
 
-    return _Class;
+    TestCase.prototype.runAssertion = function(type, options) {
+      var result;
+      result = Assertions[type].apply(null, options.args);
+      if (options.refutation) result.success = !result.succes;
+      return this.storeAssert(type, options.refutation, result);
+    };
+
+    return TestCase;
 
   })();
 
-  Utils.extend(module.exports.prototype, Assertsions);
+  _ref = Object.keys(Assertions);
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    key = _ref[_i];
+    TestCase.addAssertionMethods(key);
+  }
 
-  Utils.extend(module.exports.prototype, EventEmitter);
+  Utils.extend(TestCase.prototype, EventEmitter);
 
-  Utils.extend(module.exports, EventEmitter);
+  Utils.extend(TestCase, EventEmitter);
+
+  module.exports = TestCase;
 
 }).call(this);
 }, "utils": function(exports, require, module) {
@@ -547,6 +583,11 @@ window.Janitor.Stitch = {};
         _results.push(obj1[key] = value);
       }
       return _results;
+    },
+    firstToUpper: function(text) {
+      return text.replace(/.{1}/, function(v) {
+        return v.toUpperCase();
+      });
     }
   };
 }});

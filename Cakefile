@@ -12,11 +12,10 @@ task 'build', 'Build dist file', ->
       }).call(window.Janitor.Stitch);
       window.Janitor.TestCase = Janitor.Stitch.require('test_case'),
       window.Janitor.BrowserRunner = Janitor.Stitch.require('browser_runner')
-      
     """
     fs.writeFileSync __dirname + '/dist/janitor.js', source
 
 task 'test', 'Run test suite', ->
   Janitor = require './src/main'
-  runner = new Janitor.NodeRunner { dir: __dirname + '/test' }
+  runner = new Janitor.NodeRunner { dir: __dirname + '/test/cases' }
   runner.run()

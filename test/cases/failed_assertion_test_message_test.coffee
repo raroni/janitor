@@ -1,5 +1,5 @@
-Janitor = require '../.'
-FailedAssertionMessage = require '../src/failed_assertion_message'
+Janitor = require '../../.'
+FailedAssertionMessage = require '../../src/failed_assertion_message'
 
 module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
   'test equal': ->
