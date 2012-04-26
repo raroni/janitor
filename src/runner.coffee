@@ -1,8 +1,9 @@
 module.exports = class
   constructor: (@options) ->
   run: ->
-    new @presenterClass @activeTests(), @options
-    Test.runAll() for Test in @activeTests()
+    tests = @activeTests()
+    new @presenterClass tests, @options
+    Test.runAll() for Test in tests
   
   activeTests: ->
     tests = @tests()
