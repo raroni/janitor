@@ -18,6 +18,9 @@ module.exports = class FailedAssertionMessage
   assertTruthy: ->
     "#{@result.value} is not true"
   
+  assertMatch: ->
+    "#{@result.actual} does not match #{@result.regEx.toString()}"
+  
   toString: ->
     if @[@methodName()]
       @[@methodName()]()

@@ -94,3 +94,17 @@ module.exports = class AssertionsTest extends Janitor.TestCase
     @assertEqual 0.1, result.delta
     @assertEqual 25, result.expected
     @assertEqual 25.2, result.actual
+  
+  'test passing matches': ->
+    regEx = /[0-9]/
+    result = Assertions.match regEx, '1' 
+    @assert result.success
+    @assertEqual regEx, result.regEx
+    @assertEqual '1', result.actual
+  
+  'test failing matches': ->
+    regEx = /[0-9]/
+    result = Assertions.match regEx, 'a' 
+    @refute result.success
+    @assertEqual regEx, result.regEx
+    @assertEqual 'a', result.actual

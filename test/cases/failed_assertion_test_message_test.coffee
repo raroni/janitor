@@ -42,3 +42,13 @@ module.exports = class FailedAssertionMessageTest extends Janitor.TestCase
     
     message = new FailedAssertionMessage failedAssertion
     @assertEqual '2 equals 2', message.toString()
+  
+  'test match': ->
+    failedAssertion =
+      type: 'match'
+      result:
+        regEx: /[0-9]/
+        actual: 'a'
+    
+    message = new FailedAssertionMessage failedAssertion
+    @assertEqual 'a does not match /[0-9]/', message.toString()

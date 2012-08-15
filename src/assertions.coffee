@@ -34,3 +34,7 @@ module.exports =
   inDelta: (expected, actual, delta) ->
     success = expected-delta < actual && expected+delta > actual
     { success, expected, actual, delta }
+  
+  match: (regEx, actual) ->
+    success = regEx.exec actual
+    { success, regEx, actual }
