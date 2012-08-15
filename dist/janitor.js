@@ -116,6 +116,15 @@ window.Janitor.Stitch = {};
         actual: actual,
         delta: delta
       };
+    },
+    match: function(regEx, actual) {
+      var success;
+      success = regEx.exec(actual);
+      return {
+        success: success,
+        regEx: regEx,
+        actual: actual
+      };
     }
   };
 }, "browser_presenter": function(exports, require, module) {(function() {
@@ -260,6 +269,10 @@ window.Janitor.Stitch = {};
 
     FailedAssertionMessage.prototype.assertTruthy = function() {
       return "" + this.result.value + " is not true";
+    };
+
+    FailedAssertionMessage.prototype.assertMatch = function() {
+      return "" + this.result.actual + " does not match " + (this.result.regEx.toString());
     };
 
     FailedAssertionMessage.prototype.toString = function() {
